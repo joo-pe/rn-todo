@@ -1,6 +1,10 @@
 import { useState } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
-import Input, { KeyboardTypes, ReturnKeyTypes } from '../components/Input';
+import Input, {
+  IconNames,
+  KeyboardTypes,
+  ReturnKeyTypes,
+} from '../components/Input';
 import SafeInputView from '../components/SafeInputView';
 
 /* global require */
@@ -12,24 +16,27 @@ const SignInScreen = () => {
     <SafeInputView>
       <View style={styles.container}>
         <Image
-            source={require('../../assets/main.png')}
-            style={styles.image}
-            resizeMode={'cover'}
+          source={require('../../assets/main.png')}
+          style={styles.image}
+          resizeMode={'cover'}
+        />
+
+        <Input
+          value={email}
+          onChangeText={(text) => setEmail(text.trim())}
+          title={'email'}
+          placeholder={'your@email.com'}
+          keyboardType={KeyboardTypes.EMAIL}
+          returnKeyType={ReturnKeyTypes.NEXT}
+          iconName={IconNames.EMAIL}
         />
         <Input
-            value={email}
-            onChangeText={(text) => setEmail(text.trim())}
-            title={'email'}
-            placeholder={'your@email.com'}
-            keyboardType={KeyboardTypes.EMAIL}
-            returnKeyType={ReturnKeyTypes.NEXT}
-        />
-        <Input
-            value={password}
-            onChangeText={(text) => setPassword(text.trim())}
-            title={'password'}
-            secureTextEntry
-            placeholderTextColor={'red'}
+          value={password}
+          onChangeText={(text) => setPassword(text.trim())}
+          title={'password'}
+          secureTextEntry
+          placeholderTextColor={'red'}
+          iconName={IconNames.PASSWORD}
         />
       </View>
     </SafeInputView>
