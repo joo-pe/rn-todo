@@ -1,5 +1,6 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Image, Keyboard, StyleSheet, View } from 'react-native';
+import { signIn } from '../api/auth';
 import Button from '../components/Button';
 import Input, {
   IconNames,
@@ -8,17 +9,29 @@ import Input, {
 } from '../components/Input';
 import SafeInputView from '../components/SafeInputView';
 
-/* global require */
 const SignInScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const passwordRef = useRef(null);
-  const [disabled, setDisabled] = useState(false);
+  const [disabled, setDisabled] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const onSubmit = () => {
-    if (!disabled) {
+  useEffect(() => {
+    setDisabled(!email || !password);
+  }, [email, password]);
+
+  /* global require */
+  const onSubmit = async () => {
+    if (!disabled && !isLoading) {
       Keyboard.dismiss();
-      console.log('onSubmit');
+      setIsLoading(true);
+      try {
+        const data = await signIn(email, password);
+        console.log(data);
+      } catch (e) {
+        console.log(e);
+      }
+      setIsLoading(false);
     }
   };
 
@@ -52,7 +65,12 @@ const SignInScreen = () => {
         />
 
         <View style={styles.buttonContainer}>
-          <Button title={'LOGIN'} onPress={onSubmit} disabled={disabled} />
+          <Button
+            title={'LOGIN'}
+            onPress={onSubmit}
+            disabled={disabled}
+            isLoading={isLoading}
+          />
         </View>
       </View>
     </SafeInputView>
