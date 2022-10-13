@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Image, Keyboard, StyleSheet, View } from 'react-native';
+import { Alert, Image, Keyboard, StyleSheet, View } from 'react-native';
 import { signIn } from '../api/auth';
 import Button from '../components/Button';
 import Input, {
@@ -8,8 +8,10 @@ import Input, {
   ReturnKeyTypes,
 } from '../components/Input';
 import SafeInputView from '../components/SafeInputView';
+import PropTypes from 'prop-types';
 
-const SignInScreen = () => {
+/* gloabl require */
+const SignInScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const passwordRef = useRef(null);
@@ -20,18 +22,22 @@ const SignInScreen = () => {
     setDisabled(!email || !password);
   }, [email, password]);
 
-  /* global require */
   const onSubmit = async () => {
     if (!disabled && !isLoading) {
       Keyboard.dismiss();
       setIsLoading(true);
       try {
-        const data = await signIn(email, password);
-        console.log(data);
+        await signIn(email, password);
+        setIsLoading(false);
+        navigation.navigate('List');
       } catch (e) {
-        console.log(e);
+        Alert.alert('SignIn Failed', e, [
+          {
+            text: 'OK',
+            onPress: () => setIsLoading(false),
+          },
+        ]);
       }
-      setIsLoading(false);
     }
   };
 
@@ -75,6 +81,10 @@ const SignInScreen = () => {
       </View>
     </SafeInputView>
   );
+};
+
+SignInScreen.propTypes = {
+  navigation: PropTypes.object,
 };
 
 const styles = StyleSheet.create({
